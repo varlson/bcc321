@@ -1,6 +1,6 @@
 const pg = require("pg");
 require("dotenv").config();
-const string = process.env.DB_URL;
+const string = process.env.DB_URL1;
 
 const client = new pg.Client(string);
 
@@ -37,7 +37,7 @@ const addUser = (req, res, next) => {
 // LIST USERS
 
 const listUsers = (req, res, next) => {
-  client.query("SELECT * FROM Usuario", (error, success) => {
+  client.query("SELECT * FROM Usuario ORDER BY id ASC", (error, success) => {
     if (error) {
       return res.status(500).json({
         msg: "Houve um erro interno ao listar usuarios",
