@@ -1,150 +1,301 @@
 const pg = require("pg");
-
+require("dotenv").config();
 const string = process.env.DB_URL;
 
 const client = new pg.Client(string);
 
-const getAllMonitors = (req, res, next) => {
-  const { table } = req.body;
+/* UDATATION  */
 
-  if (!table)
-    return res.status(5001).json({ msg: "por favor, informe tabela" });
-  client.query(`select * from ${table}`, (err, results) => {
-    if (err) {
-      return res.status(501).json({
-        msg: "Houve um erro interno",
-        error: err,
-      });
-    }
+// ADD USER
 
-    return res.status(200).json({
-      monitor: results.rows,
-    });
-  });
-};
+const addUser = (req, res, next) => {
+  const { id, name, password, fuso_horario } = req.body;
 
-const getMonitorById = (req, res, next) => {
-  const { table, id, id_name } = req.body;
-  console.log(table, id, id_name);
-  if (!table) return res.status(501).json({ msg: "por favor, informe tabela" });
+  if (!id || !name || !password || !fuso_horario) {
+    return res.status(405).json({ error: "Informe todos os dados" });
+  }
+
   client.query(
-    `select * from ${table} where ${id_name} = $1`,
-    [id],
-    (err, results) => {
-      if (err) {
-        return res.status(501).json({
-          msg: "Houve um erro interno",
-          error: err,
+    "INSERT INTO Usuario VALUES($1, $2, $3, $4)",
+    [id, name, password, fuso_horario],
+    (error, success) => {
+      if (error) {
+        return res.status(500).json({
+          msg: "Houve um erro interno ao tentar salvar dados",
+          error: error,
         });
       }
 
-      return res.status(200).json({
-        monitor: results.rows,
+      return res.status(201).json({
+        msg: "Usuario salvo com sucesso",
       });
     }
   );
 };
 
-const updateTable = (req, res, next) => {
-  const { table, id, name, adress } = req.body;
-  // const {table, id, name, adress, date, sex, salario, id_sup,id_dep} = req.body
+//-----------------------------------------
+// LIST USERS
 
+const listUsers = (req, res, next) => {
+  client.query("SELECT * FROM Usuario", (error, success) => {
+    if (error) {
+      return res.status(500).json({
+        msg: "Houve um erro interno ao listar usuarios",
+        error: error,
+      });
+    }
+
+    return res.status(201).json({
+      data: success.rows,
+    });
+  });
+};
+
+//-----------------------------------------
+
+const listUser = (req, res, next) => {
+  const id = req.params.id;
+  if (!id) {
+    return res.status(405).json({ error: "Informe o id do usuario" });
+  }
   client.query(
-    `UPDATE ${table} SET NomeFunc = $1, Endereco = $2 WHERE ID_Func = $3`,
-    [name, adress, id],
-    (error, result) => {
+    "SELECT * FROM Usuario WHERE id = $1",
+    [id],
+    (error, success) => {
       if (error) {
-        return res.status(501).json({
-          msg: "Houve um erro interno",
+        return res.status(500).json({
+          msg: "Usuario nao encontrado",
           error: error,
         });
       }
 
-      return res.status(200).json({
+      return res.status(201).json({
+        data: success.rows,
+      });
+    }
+  );
+};
+
+// EDIT USER
+
+const editUser = (req, res, next) => {
+  const id = req.params.id;
+  const { name, password } = req.body;
+  if (!id || !name || !password) {
+    return res.status(405).json({ error: "Informe os dados" });
+  }
+
+  // console.log(id, name, password);
+  client.query(
+    "UPDATE Usuario SET nome_de_usuario = $1, senha = $2 WHERE id = $3",
+    [name, password, id],
+    (error, success) => {
+      if (error) {
+        console.log(error);
+        return res.status(500).json({
+          msg: "Houve um erro interno, dados nao podem ser atualizados",
+          error: error,
+        });
+      }
+
+      return res.status(201).json({
         msg: "Dados atualizados com sucesso",
       });
     }
   );
 };
 
-/* DELETE  */
-const deleteInTable = (req, res, next) => {
-  const { table, id } = req.body;
+//-----------------------------------------
+// DELETE USER
+const deleteUser = (req, res, next) => {
+  const id = req.params.id;
+  if (!id) {
+    return res.status(405).json({ error: "Informe os dados" });
+  }
+
+  // console.log(id, name, password);
+  client.query("DELETE FROM Usuario WHERE id = $1", [id], (error, success) => {
+    if (error) {
+      console.log(error);
+      return res.status(500).json({
+        msg: "Houve um erro interno, usuario nao pode ser deletado",
+        error: error,
+      });
+    }
+
+    return res.status(201).json({
+      msg: "Usuario deletado com sucesso",
+    });
+  });
+};
+//-----------------------------------------
+
+// ADD MONITOR
+
+const addMonitor = (req, res, next) => {
+  const { id, name, id_user } = req.body;
+
+  if (!id || !name || !id_user) {
+    return res.status(405).json({ error: "Informe todos os dados" });
+  }
 
   client.query(
-    `DELETE FROM ${table} WHERE id_Func = $1`,
+    "INSERT INTO Monitor VALUES($1, $2, $3)",
+    [id, name, id_user],
+    (error, success) => {
+      if (error) {
+        return res.status(500).json({
+          msg: "Houve um erro interno ao tentar adicionar monitor",
+          error: error,
+        });
+      }
+
+      return res.status(201).json({
+        msg: "Monitor adicionado com sucesso",
+      });
+    }
+  );
+};
+
+//-----------------------------------------
+// LIST ALL MONITOR
+
+const listMonitors = (req, res, next) => {
+  client.query("SELECT * FROM Monitor", (error, success) => {
+    if (error) {
+      return res.status(500).json({
+        msg: "Houve um erro interno ao listar monitores",
+        error: error,
+      });
+    }
+
+    return res.status(201).json({
+      data: success.rows,
+    });
+  });
+};
+
+//-----------------------------------------
+
+// LIST MONITOR
+const listMonitor = (req, res, next) => {
+  const id = req.params.id;
+  if (!id) {
+    return res.status(405).json({ error: "Informe o id do monitor" });
+  }
+  client.query(
+    "SELECT * FROM Monitor WHERE id = $1",
     [id],
-    (error, result) => {
+    (error, success) => {
       if (error) {
-        return res.status(501).json({
-          msg: "Houve um erro interno",
+        return res.status(500).json({
+          msg: "Monitor nao encontrado",
           error: error,
         });
       }
 
-      return res.status(200).json({
-        msg: "Deletado com sucesso",
+      return res.status(201).json({
+        data: success.rows,
       });
     }
   );
 };
+//---------------------------------------------------------------
 
-const add = (req, res, next) => {
-  const { table, data } = req.body;
-  const {
-    ID_Func,
-    NomeFunc,
-    Endereco,
-    DataNasc,
-    Sexo,
-    Salario,
-    ID_Superv,
-    ID_Depto,
-  } = data;
+// LIST MONITOR CREATED BY AN USER
 
-  console.log(
-    ID_Func,
-    NomeFunc,
-    Endereco,
-    DataNasc,
-    Sexo,
-    Salario,
-    ID_Superv,
-    ID_Depto
-  );
-  const arr_datas = [
-    ID_Func,
-    NomeFunc,
-    Endereco,
-    DataNasc,
-    Sexo,
-    Salario,
-    ID_Superv,
-    ID_Depto,
-  ];
+const listMonitorByUser = (req, res, next) => {
+  const id = req.params.id;
+  if (!id) {
+    return res.status(405).json({ error: "Informe o id do monitor" });
+  }
   client.query(
-    `INSERT INTO ${table} (ID_Func, NomeFunc, Endereco, DataNasc, Sexo, Salario, ID_Superv, ID_Depto) VALUES ($1,$2,$3,$4, $5, $6, $7, $8)`,
-    arr_datas,
-    (error, result) => {
+    "SELECT Monitor.nome, Usuario.nome_de_usuario, Monitor.id_usuario FROM Monitor, Usuario WHERE(Monitor.id_usuario = Usuario.id) AND Usuario.id = $1",
+    [id],
+    (error, success) => {
       if (error) {
-        return res.status(501).json({
-          msg: "Houve um erro interno",
+        return res.status(500).json({
+          msg: "Monitor nao encontrado",
           error: error,
         });
       }
 
-      return res.status(200).json({
-        msg: "Dados salvo com sucesso",
+      return res.status(201).json({
+        data: success.rows,
       });
     }
   );
 };
+
+//-------------------------------------------------------
+
+// EDIT MONITOR
+
+const editMonitor = (req, res, next) => {
+  const id = req.params.id;
+  const { name, id_user } = req.body;
+  if (!id_user || !name) {
+    return res.status(405).json({ error: "Informe os dados" });
+  }
+
+  // console.log(id, name, password);
+  client.query(
+    "UPDATE Monitor SET nome = $1,  id = $2",
+    [name, id_user],
+    (error, success) => {
+      if (error) {
+        console.log(error);
+        return res.status(500).json({
+          msg: "Houve um erro interno, dados nao podem ser atualizados",
+          error: error,
+        });
+      }
+
+      return res.status(201).json({
+        msg: "Dados atualizados com sucesso",
+      });
+    }
+  );
+};
+
+//-----------------------------------------
+// DELETE MONITOR
+const deleteMonitor = (req, res, next) => {
+  const id = req.params.id;
+  if (!id) {
+    return res.status(405).json({ error: "Informe os dados" });
+  }
+
+  // console.log(id, name, password);
+  client.query("DELETE FROM Monitor WHERE id = $1", [id], (error, success) => {
+    if (error) {
+      console.log(error);
+      return res.status(500).json({
+        msg: "Houve um erro interno, monitor nao pode ser deletado",
+        error: error,
+      });
+    }
+
+    return res.status(201).json({
+      msg: "Monitor deletado com sucesso",
+    });
+  });
+};
+//-----------------------------------------
 
 module.exports = {
-  getAllMonitors,
+  addUser,
+  listUsers,
+  listUser,
+  editUser,
+  deleteUser,
+  addMonitor,
+  listMonitors,
+  listMonitor,
+  deleteMonitor,
+  editMonitor,
+  listMonitorByUser,
   client,
-  getMonitorById,
-  updateTable,
-  deleteInTable,
-  add,
 };
+
+//list-monitor-user

@@ -1,10 +1,17 @@
 const route = require("express").Router();
 const {
-  getAllMonitors,
-  getMonitorById,
-  updateTable,
-  deleteInTable,
-  add,
+  addUser,
+  listUsers,
+  listUser,
+  editUser,
+  deleteUser,
+  addMonitor,
+  listMonitors,
+  listMonitor,
+  editMonitor,
+  deleteMonitor,
+  listMonitorByUser,
+  client,
 } = require("../database/queries");
 //SELECT ALL MONITORS
 
@@ -14,10 +21,22 @@ route.get("/", (req, res) => {
   });
 });
 
-route.post("/list-monitors", getAllMonitors);
-route.post("/list-monitor", getMonitorById);
-route.post("/update-monitor", updateTable);
-route.post("/delete-table", deleteInTable);
-route.post("/add", add);
+/* ADAPTION  */
+
+//  USER
+route.post("/add-user", addUser);
+route.get("/list-users", listUsers);
+route.get("/list-user/:id", listUser);
+route.post("/edit-user/:id", editUser);
+route.get("/delete-user/:id", deleteUser);
+//------------------------------------------------------------
+
+//  MONITOR
+route.post("/add-monitor", addMonitor);
+route.get("/list-monitors", listMonitors);
+route.get("/list-monitor/:id", listMonitor);
+route.post("/edit-monitor/:id", editMonitor);
+route.get("/delete-monitor/:id", deleteMonitor);
+route.get("/list-monitor-user/:id", listMonitorByUser);
 
 module.exports = route;

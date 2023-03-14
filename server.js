@@ -10,13 +10,16 @@ const PORT = process.env.PORT || 8003;
 app.use(express.json());
 /* ROTAS */
 app.use("/api", route);
+
 app.listen(PORT, () => {
   client.connect((error) => {
+    console.log(process.env.DB_URL);
     if (error) {
       console.log("O servidor nao pode ser iniciada, houve erro na conexao");
+      console.log(error);
+    } else {
+      console.log("Banco de dado conectado com sucesso");
+      console.log(`server running at ${PORT}`);
     }
-
-    console.log("Banco de dado conectado com sucesso");
-    console.log(`server running at ${PORT}`);
   });
 });
