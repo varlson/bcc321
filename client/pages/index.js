@@ -1,6 +1,7 @@
 import Head from "next/head";
 import { Inter } from "@next/font/google";
-
+import { AiOutlineUsergroupAdd } from "react-icons/ai";
+import { MdCircleNotifications } from "react-icons/md";
 const inter = Inter({ subsets: ["latin"] });
 
 export default function Home() {
@@ -12,7 +13,17 @@ export default function Home() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <main className=""></main>
+      <main className="w-9/12 p-2 rounded grid grid-cols-6 m-auto bg-slate-200 mt-10 ">
+        <div className="flex flex-col items-center">
+          <AiOutlineUsergroupAdd className="text-yellow-500 text-9xl" />
+          <div className=" font-bold text-xl">Usuarios</div>
+        </div>
+
+        <div className="flex flex-col items-center">
+          <MdCircleNotifications className="text-yellow-500 text-9xl" />
+          <div className="self-center font-bold text-xl">Notificações</div>
+        </div>
+      </main>
     </>
   );
 }
