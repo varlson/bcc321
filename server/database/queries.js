@@ -10,6 +10,7 @@ const client = new pg.Client(string);
 
 const addUser = (req, res, next) => {
   const { id, name, password, fuso_horario } = req.body;
+  console.log(id, name, password, fuso_horario);
 
   if (!id || !name || !password || !fuso_horario) {
     return res.status(405).json({ error: "Informe todos os dados" });
@@ -37,7 +38,7 @@ const addUser = (req, res, next) => {
 // LIST USERS
 
 const listUsers = (req, res, next) => {
-  client.query("SELECT * FROM Usuario ORDER BY id ASC", (error, success) => {
+  client.query("SELECT * FROM Usuario ORDER BY id DESC", (error, success) => {
     if (error) {
       return res.status(500).json({
         msg: "Houve um erro interno ao listar usuarios",
@@ -109,6 +110,7 @@ const editUser = (req, res, next) => {
 // DELETE USER
 const deleteUser = (req, res, next) => {
   const id = req.params.id;
+  console.log("chegou para deletar", id);
   if (!id) {
     return res.status(405).json({ error: "Informe os dados" });
   }

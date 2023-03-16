@@ -1,7 +1,17 @@
 import Head from "next/head";
 import { Inter } from "@next/font/google";
-import { AiOutlineUsergroupAdd } from "react-icons/ai";
-import { MdCircleNotifications } from "react-icons/md";
+import { AiOutlineUsergroupAdd, AiOutlineCloudServer } from "react-icons/ai";
+import { FaLayerGroup } from "react-icons/fa";
+import { BsChatLeftDots } from "react-icons/bs";
+
+import {
+  MdCircleNotifications,
+  MdHttp,
+  MdOutlineDns,
+  MdMonitorHeart,
+  MdOutlineHowToReg,
+} from "react-icons/md";
+import Link from "next/link";
 const inter = Inter({ subsets: ["latin"] });
 
 export default function Home() {
@@ -13,15 +23,56 @@ export default function Home() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <main className="w-9/12 p-2 rounded grid grid-cols-6 m-auto bg-slate-200 mt-10 ">
-        <div className="flex flex-col items-center">
-          <AiOutlineUsergroupAdd className="text-yellow-500 text-9xl" />
-          <div className=" font-bold text-xl">Usuarios</div>
+      <main className="w-9/12 p-2 rounded grid grid-cols-4 gap-2 m-auto bg-slate-200 mt-10 ">
+        <div className="cursor-pointer flex flex-col items-center">
+          <Link href="/user">
+            <AiOutlineUsergroupAdd className="text-yellow-500 text-6xl" />
+            <div className=" font-bold text-xl">Usuarios</div>
+          </Link>
         </div>
 
-        <div className="flex flex-col items-center">
-          <MdCircleNotifications className="text-yellow-500 text-9xl" />
+        <div className="flex flex-col items-center text-slate-300">
+          <MdCircleNotifications className="text-6xl" />
           <div className="self-center font-bold text-xl">Notificações</div>
+        </div>
+
+        <div className="flex flex-col items-center text-slate-300">
+          <AiOutlineCloudServer className=" text-6xl" />
+          <div className="self-center font-bold text-xl">Servidor</div>
+        </div>
+
+        <div className="flex text-slate-300 flex-col items-center">
+          <MdHttp className=" text-6xl" />
+          <div className="self-center font-bold text-xl">HTTP</div>
+        </div>
+
+        <div className="flex flex-col text-slate-300 items-center">
+          <MdOutlineDns className=" text-6xl" />
+          <div className="self-center font-bold text-xl">DNS</div>
+        </div>
+
+        <div className="cursor-pointer">
+          <Link className="flex flex-col items-center" href="/monitores">
+            <MdMonitorHeart className="text-yellow-500 text-6xl" />
+            <div className="self-center font-bold text-xl text-center">
+              Monitores
+            </div>
+          </Link>
+        </div>
+
+        <div className="flex flex-col text-slate-300 items-center">
+          <BsChatLeftDots className=" text-6xl" />
+          <div className="self-center font-bold text-xl">Chatbot</div>
+        </div>
+
+        <div className="flex flex-col text-slate-300 items-center">
+          <FaLayerGroup className=" text-6xl" />
+          <div className="self-center font-bold text-xl">Grupo</div>
+        </div>
+
+        <div className="flex flex-col text-slate-300 items-center">
+          <MdOutlineHowToReg className=" text-6xl" />
+          <div className="self-center font-bold text-xl">Status</div>
         </div>
       </main>
     </>
